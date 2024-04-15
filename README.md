@@ -1,17 +1,15 @@
-# RDPAccessor V3
-
+# RDPAccessor V4
 ![CSHARP](https://img.shields.io/badge/Language-CSHARP-aqua?style=for-the-badge&logo=CS)
 ![](bnr.png)
 
 ## 📑 About
 <b>Most simple rdp(accessor), this program have builder for crafting stubs.
-<br>RDPAccessor V3 creating a hidden user with sending to telegram.</b>
+<br>RDPAccessor V4 creating a user in system and sending data to telegram bot.</b>
 
 ### 💾 Features:
- * Changelog: 15/03/2024
- * Build Size: 8-10kb✅
+ * Build Size: 8-13kb✅
  * Self-Delete after send in telegram-bot:✅
- * Protections of debuggers/monitors/and etc:✅
+ * Simple protect against debuggers/monitors/and etc:✅
  * Simple Anti-VirtualMachine:✅
  * Simple Anti-AnyRun:✅
 
@@ -20,7 +18,6 @@
   <img alt="screen" width="300" src="lck_bnr.png">
   <img alt="screen" width="300" src="log_sample.png">
 </p> 
-
 
 
 ## How to use?
@@ -34,8 +31,10 @@
 
 
  ### 🃏Updates-Note:
- * CHANGELOG: 15.03.2024
- * Fixed stub, fix function anti-anyrun and anti virtual machine.
+ * CHANGELOG: 15.04.2024
+ * Fixed functions
+ * Add mutex function in builder
+ * Simple change design builder
 
 
 ## ⚠️ Disclaimer - this project for education and purposes only!

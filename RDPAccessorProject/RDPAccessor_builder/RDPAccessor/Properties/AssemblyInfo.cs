@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
-[assembly: AssemblyTitle("RDPAcessor by K3RNEL-DEV")]
-[assembly: AssemblyDescription("RDPAcessor by K3RNEL-DEV")]
+[assembly: AssemblyTitle("[ RDP-ACCESSOR V4 ] - [ by k3rnel-dev ]")]
+[assembly: AssemblyDescription("[ RDP-ACCESSOR V4 ] - [ by k3rnel-dev ]")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("RDPAcessor by K3RNEL-DEV")]
-[assembly: AssemblyProduct("RDPAcessor by K3RNEL-DEV")]
-[assembly: AssemblyCopyright("RDPAcessor by K3RNEL-DEV")]
-[assembly: AssemblyTrademark("RDPAcessor by K3RNEL-DEV")]
+[assembly: AssemblyCompany("[ RDP-ACCESSOR V4 ] - [ by k3rnel-dev ]")]
+[assembly: AssemblyProduct("[ RDP-ACCESSOR V4 ] - [ by k3rnel-dev ]")]
+[assembly: AssemblyCopyright("[ RDP-ACCESSOR V4 ] - [ by k3rnel-dev ]")]
+[assembly: AssemblyTrademark("[ RDP-ACCESSOR V4 ] - [ by k3rnel-dev ]")]
 [assembly: AssemblyCulture("")]
 
 // Установка значения False для параметра ComVisible делает типы в этой сборке невидимыми
